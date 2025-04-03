@@ -2,64 +2,66 @@ pipeline {
     agent any
 
     parameters {
-        string(name: 'DEPLOY_ENV', defaultValue: 'dev', description: 'Target environment (dev/staging/prod)')
-        booleanParam(name: 'RUN_TESTS', defaultValue: true, description: 'Run tests before deployment?')
-        choice(name: 'BUILD_TYPE', choices: ['debug', 'release' , 'optimizedwithdebug'], description: 'Choose the build type')
+        string(name: 'APP_VERSION', defaultValue: '1.0.0', description: 'Application version')
+        choice(name: 'DEPLOY_ENV', choices: ['dev', 'staging', 'prod'], description: 'Target environment')
+        booleanParam(name: 'RUN_TESTS', defaultValue: true, description: 'Run test suite?')
     }
 
     environment {
-        MY_ENV_VAR = 'HelloJenkins'
+        ARTIFACT_DIR = "artifacts"
     }
 
     stages {
-        stage('Clone Repository') {
+        stage('Checkout Code') {
             steps {
                 echo '📥 Cloning repository...'
-                echo 'Webhook added'
                 git 'https://github.com/octocat/Hello-World.git'
             }
         }
-        stage('Creating Artifacts') {
-            steps {
-                echo '📥 Creating artifacts...'
-                sh 'touch file1'
-           }
-        }
+
         stage('Build') {
             steps {
-                echo "🔨 Building in ${params.BUILD_TYPE} mode..."
-                sh 'echo Building the project...'
-                sh 'echo $MY_ENV_VAR'
+                echo "🔨 Building app version ${params.APP_VERSION}..."
+                sh '''
+                    mkdir -p ${ARTIFACT_DIR}
+                    echo "Build for version ${APP_VERSION}" > ${ARTIFACT_DIR}/build.log
+                '''
             }
         }
 
-        stage('Test') {
+        stage('Run Tests') {
             when {
                 expression { return params.RUN_TESTS }
             }
             steps {
                 echo '🧪 Running tests...'
-                sh 'echo Pretend we are running unit tests here'
+                sh '''
+                    echo "Tests passed!" > ${ARTIFACT_DIR}/test-results.log
+                '''
             }
         }
 
         stage('Deploy') {
             steps {
                 echo "🚀 Deploying to ${params.DEPLOY_ENV} environment..."
-                sh 'echo Deployment simulated'
+                sh 'sleep 2'
+                sh "echo Deployed version ${params.APP_VERSION} to ${params.DEPLOY_ENV} > ${ARTIFACT_DIR}/deploy.log"
+            }
+        }
+
+        stage('Archive Artifacts') {
+            steps {
+                archiveArtifacts artifacts: "${ARTIFACT_DIR}/*.log", fingerprint: true
             }
         }
     }
 
     post {
-        always {
-            echo '✅ Pipeline complete (success or fail)'
-        }
         success {
-            echo '🎉 Build was successful!'
+            echo '✅ Build finished successfully!'
         }
         failure {
-            echo '💥 Build failed!'
+            echo '❌ Build failed.'
         }
     }
 }
