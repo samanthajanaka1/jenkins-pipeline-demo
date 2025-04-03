@@ -16,11 +16,15 @@ pipeline {
             steps {
                 echo '📥 Cloning repository...'
                 echo 'Webhook added'
-                sh 'touch file1'
                 git 'https://github.com/octocat/Hello-World.git'
             }
         }
-
+        stage('Creating Artifacts') {
+            steps {
+                echo '📥 Creating artifacts...'
+                sh 'touch file1'
+           }
+        }
         stage('Build') {
             steps {
                 echo "🔨 Building in ${params.BUILD_TYPE} mode..."
