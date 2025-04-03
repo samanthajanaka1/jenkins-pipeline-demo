@@ -9,6 +9,7 @@ pipeline {
         stage('Clone Repository') {
             steps {
                 echo '📥 Cloning repository...'
+                echo ' webhook added'
                 git 'https://github.com/octocat/Hello-World.git'
             }
         }
