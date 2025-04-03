@@ -4,7 +4,7 @@ pipeline {
     parameters {
         string(name: 'DEPLOY_ENV', defaultValue: 'dev', description: 'Target environment (dev/staging/prod)')
         booleanParam(name: 'RUN_TESTS', defaultValue: true, description: 'Run tests before deployment?')
-        choice(name: 'BUILD_TYPE', choices: ['debug', 'release'], description: 'Choose the build type')
+        choice(name: 'BUILD_TYPE', choices: ['debug', 'release' , 'optimizedwithdebug'], description: 'Choose the build type')
     }
 
     environment {
