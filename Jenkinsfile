@@ -31,7 +31,7 @@ pipeline {
 
         stage('Deploy') {
             steps {
-                echo '🚀 Deploying...'
+                echo '🚀 Deploying...XXXXX'
                 sh 'echo Deployment simulated'
             }
         }
