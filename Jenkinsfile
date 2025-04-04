@@ -14,14 +14,14 @@ pipeline {
     stages {
         stage('Checkout Code') {
             steps {
-                echo '📥 Cloning repository...'
+                echo ' Cloning repository...'
                 git 'https://github.com/octocat/Hello-World.git'
             }
         }
 
         stage('Build') {
             steps {
-                echo "🔨 Building app version ${params.APP_VERSION}..."
+                echo " Building app version ${params.APP_VERSION}..."
                 sh '''
                     mkdir -p ${ARTIFACT_DIR}
                     echo "Build for version ${APP_VERSION}" > ${ARTIFACT_DIR}/build.log
@@ -34,7 +34,7 @@ pipeline {
                 expression { return params.RUN_TESTS }
             }
             steps {
-                echo '🧪 Running tests...'
+                echo ' Running tests...'
                 sh '''
                     echo "Tests passed!" > ${ARTIFACT_DIR}/test-results.log
                 '''
@@ -43,7 +43,7 @@ pipeline {
 
         stage('Deploy') {
             steps {
-                echo "🚀 Deploying to ${params.DEPLOY_ENV} environment..."
+                echo "Deploying to ${params.DEPLOY_ENV} environment..."
                 sh 'sleep 2'
                 sh "echo Deployed version ${params.APP_VERSION} to ${params.DEPLOY_ENV} > ${ARTIFACT_DIR}/deploy.log"
             }
@@ -58,10 +58,10 @@ pipeline {
 
     post {
         success {
-            echo '✅ Build finished successfully!'
+            echo ' Build finished successfully!'
         }
         failure {
-            echo '❌ Build failed.'
+            echo 'Build failed.'
         }
     }
 }
